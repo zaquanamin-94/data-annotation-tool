@@ -61,9 +61,9 @@ def display_data(selected_table):
         st.session_state.row_index = 0
 
     # Navigation buttons
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([12, 1, 1])
 
-    with col1:
+    with col2:
         if st.button("⬅️ Previous"):
             if st.session_state.row_index == 0:
                 st.session_state.row_index = total_rows
@@ -85,23 +85,25 @@ def display_data(selected_table):
 
     with left_col:
         st.subheader(f"📝 Total Q/A Pair: {total_rows}")
-        st.subheader("Prompt")
+        st.subheader(f"Q/A pair ID ---> {id}")
+        st.subheader("Question")
         st.write(f"{row['prompt']}")
-        st.subheader("Response")
+        st.subheader("Answer")
         st.write(f"{row['response']}")
 
     with right_col:
         with st.form(f"feedback_form_{st.session_state.row_index}"):
             feedback = st.text_area("💬 Feedback on this QA pair")
-            rating = st.radio("Rating (5 best, 1 worst)", ['please choose','1', '2', '3', '4', '5'], horizontal=True)
+            rating = st.radio("Rating", ['please choose','Poor', 'Fair', 'Average', 'Good', 'Excellent'], horizontal=True)
+            category = st.radio("Category", ['please choose','', 'Informational', 'Creative', 'Instructional', 'Technical', 'Conversational'], horizontal=True)
             submit = st.form_submit_button("Submit Feedback")
             
             if submit:
-                if rating == 'please choose':
-                    st.warning("Please select a rating.")
+                if rating == 'please choose' or category == 'please choose':
+                    st.warning("Please select a rating and category.")
                 else:
-                    st.success("Feedback submitted! ✅")
-                    update_table(feedback, rating, id, zp_tags, selected_table)
+                    st.success("Feedback submitted! ✅  \n *note: will automatically update comment and rating and categoty in DataBase*")
+                    # update_table(feedback, rating, id, zp_tags, selected_table)
 
 def main():
     st.set_page_config(page_title="SFT Data Tagging", layout="wide")
